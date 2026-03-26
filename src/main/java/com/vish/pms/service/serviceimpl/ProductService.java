@@ -6,9 +6,9 @@ import java.util.UUID;
 import org.springframework.stereotype.Service;
 
 import com.vish.pms.entity.Product;
+import com.vish.pms.exception.ProductNotFoundException;
 import com.vish.pms.repository.ProductRepository;
 import com.vish.pms.service.CrudService;
-
 @Service
 public class ProductService implements CrudService<Product, UUID> {
 
@@ -29,7 +29,7 @@ public class ProductService implements CrudService<Product, UUID> {
     @Override
     public void deleteById(UUID id) {
         if (!productRepository.existsById(id)) {
-            throw new RuntimeException("Product not found with id: " + id);
+            throw new ProductNotFoundException("Product not found with id: " + id);
         }
         productRepository.deleteById(id);
     }
@@ -42,7 +42,8 @@ public class ProductService implements CrudService<Product, UUID> {
     @Override
     public Product getByID(UUID id) {
         return productRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Product not found with id: " + id));
+                .orElseThrow(() ->
+                        new ProductNotFoundException("Product not found with id: " + id));
     }
 
     @Override
@@ -52,9 +53,10 @@ public class ProductService implements CrudService<Product, UUID> {
         }
 
         Product existing = productRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Product not found with id: " + id));
+                .orElseThrow(() ->
+                        new ProductNotFoundException("Product not found with id: " + id));
 
-        // update fields (adjust based on your Product class)
+        // update fields
         existing.setName(entity.getName());
         existing.setPrice(entity.getPrice());
         existing.setDescription(entity.getDescription());
@@ -63,7 +65,9 @@ public class ProductService implements CrudService<Product, UUID> {
     }
 
     public List<Product> createAll(List<Product> products) {
-        // TODO Auto-generated method stub
+        if (products == null || products.isEmpty()) {
+            throw new IllegalArgumentException("Product list cannot be empty");
+        }
         return productRepository.saveAll(products);
     }
 }
