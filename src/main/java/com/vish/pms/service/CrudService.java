@@ -10,7 +10,7 @@ public interface CrudService<T, ID> {
 
     T getByID(ID id);
 
-    List<T> getAll();
+    List<T> getAll(int page, int size, String sortBy, String direction);
 
     void deleteById(ID id);
 }

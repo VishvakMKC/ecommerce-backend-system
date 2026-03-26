@@ -12,9 +12,10 @@ import com.vish.pms.service.serviceimpl.ProductService;
 
 import jakarta.validation.Valid;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
+
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -36,11 +37,16 @@ public class ProductController {
 
     // ✅ Get all products
     @GetMapping
-    public ResponseEntity<List<ProductResponseDto>> getAllProducts() {
-        List<ProductResponseDto> response = productService.getAll()
-                .stream()
+    public ResponseEntity<List<ProductResponseDto>> getAllProducts(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "5") int size,
+            @RequestParam(defaultValue = "name") String sortBy,
+            @RequestParam(defaultValue = "asc", name = "dir") String direction) {
+
+        List<Product> productPage = productService.getAll( page > 0 ? page = page - 1 : page, size, sortBy, direction);
+        List<ProductResponseDto> response = productPage.stream()
                 .map(ProductMapper::toResponse)
-                .collect(Collectors.toList());
+                .toList();
 
         return ResponseEntity.ok(response);
     }
@@ -83,16 +89,19 @@ public class ProductController {
     }
 
     @GetMapping("/search")
-    public ResponseEntity<List<ProductResponseDto>> getAllProducts(
+    public ResponseEntity<List<ProductResponseDto>> searchProduct(
+            @RequestParam(required = false) String name,
+            @RequestParam(required = false) BigDecimal minPrice,
+            @RequestParam(required = false) BigDecimal maxPrice,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "5") int size,
             @RequestParam(defaultValue = "name") String sortBy,
-            @RequestParam(defaultValue = "asc", name = "dir") String direction) {
+            @RequestParam(defaultValue = "asc") String direction) {
 
-        List<Product> productPage = productService.paginatedSorted(page, size, sortBy, direction);
-        List<ProductResponseDto> response = productPage.stream()
-                                            .map(ProductMapper::toResponse)
-                                            .toList();
+        List<Product> productPage = productService.searchProducts(
+                name, minPrice, maxPrice, page > 0 ? page = page - 1 : page, size, sortBy, direction);
+
+        List<ProductResponseDto> response = productPage.stream().map(ProductMapper::toResponse).toList();
 
         return ResponseEntity.ok(response);
     }
