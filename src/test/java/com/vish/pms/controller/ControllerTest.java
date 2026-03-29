@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vish.pms.config.CustomUserDetails;
 import com.vish.pms.dto.ProductRequestDto;
 import com.vish.pms.dto.UserRequestDto;
-import com.vish.pms.entity.Cart;
 import com.vish.pms.entity.Product;
 import com.vish.pms.entity.User;
 import com.vish.pms.enums.Role;
@@ -27,10 +26,8 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
 import static org.mockito.Mockito.when;
 import static org.mockito.ArgumentMatchers.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
