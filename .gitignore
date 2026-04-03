@@ -16,6 +16,8 @@ hs_err_pid*.log
 .springBeans
 .sts4-cache
 
+hs_err_*.log
+
 ### IntelliJ IDEA ###
 .idea
 *.iws
